@@ -1,14 +1,14 @@
 import sqlite3
+from todos import DB_PATH
 
-con = sqlite3.connect("hermes.db")
+def init_db():
+    with sqlite3.connect(DB_PATH) as con:
+        con.execute('''CREATE TABLE IF NOT EXISTS TASKS
+                    (TASK_ID varchar(5) NOT NULL PRIMARY KEY,
+                     TASK varchar(100) NOT NULL,
+                     STATUS TEXT NOT NULL CHECK (STATUS IN ('OPEN', 'CLOSED')))''')
+    print(f"Database setup completed: {DB_PATH}")
 
-cur = con.cursor()
 
-cur.execute('''create table if not exists TASKS
-            (TASK_ID varchar(5) not null primary key, 
-            TASK varchar(100) NOT NULL, 
-            STATUS not null check(STATUS not in ('OPEN','CLOSED'))''')
-
-print("database setup completed!")
-
-con.close()
+if __name__ == "__main__":
+    init_db()

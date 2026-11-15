@@ -1,32 +1,36 @@
 import sqlite3
+from pathlib import Path
+
+DB_PATH = Path(__file__).resolve().parent / "hermes.db"
 
 def get_tasks():
-    con = sqlite3.connect("hermes.db")
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
-    output = cur.execute("SELECT * FROM TASKS")
+    res = cur.execute("SELECT * FROM TASKS")
+    rows = res.fetchall()
     con.close()
-    return output
+    return rows
 
-def create_task(id, title):
-    con = sqlite3.connect("hermes.db")
+def create_task(task_id, title):
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
-    query = (f'insert into TASKS values ({id}, {title}, "OPEN")')
-    cur.execute(query)
-    con.close()
-    return 200
-
-def update_task(id, status):
-    con = sqlite3.connect("hermes.db")
-    cur = con.cursor()
-    query = (f'update TASKS set STATUS = {status} where ID = {id}')
-    cur.execute(query)
+    cur.execute("INSERT INTO TASKS VALUES (?, ?, ?)", (task_id, title, "OPEN"))
+    con.commit()
     con.close()
     return 200
 
-def delete_task(id):
-    con = sqlite3.connect("hermes.db")
+def update_task(task_id, status):
+    con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
-    query = (f'delete from TASKS where ID = {id}')
-    cur.execute(query)
+    cur.execute("UPDATE TASKS SET STATUS = ? WHERE TASK_ID = ?", (status, task_id))
+    con.commit()
+    con.close()
+    return 200
+
+def delete_task(task_id):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+    cur.execute("DELETE FROM TASKS WHERE TASK_ID = ?", (task_id,))
+    con.commit()
     con.close()
     return 200

@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
 
 import todos
@@ -15,18 +15,21 @@ class Tasks(Resource):
         tasks = todos.get_tasks()
         return {'tasks':tasks}
 
-    def post(self, id, title):
-        response = todos.create_task(id, title)
+    def post(self):
+        data = request.json
+        response = todos.create_task(data["id"], data["title"])
         return response
 
-    def update(self, id, status):
-        if status not in ['CLOSED', 'OPEN']:
+    def put(self):
+        data = request.json
+        if data["status"] not in ['CLOSED', 'OPEN']:
             return {'error':'status can only be "OPEN" or "CLOSED"'}, 400
-        response = todos.update_task(id, status)
+        response = todos.update_task(data["id"], data["status"])
         return response
 
-    def delete(self, id):
-        response = todos.delete_task(id)
+    def delete(self):
+        data = request.json
+        response = todos.delete_task(data["id"])
         return response
     
 

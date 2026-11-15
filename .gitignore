@@ -1,4 +1,5 @@
 .venv/
+hermes.db
 
 *.pyc
 __pycache__/
