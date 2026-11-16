@@ -31,10 +31,15 @@ class Tasks(Resource):
         data = request.json
         response = todos.delete_task(data["id"])
         return response
-    
+
+class Task(Resource):
+    def get(self, task_id):
+        task = todos.get_task(task_id)
+        return {'task':task}
 
 api.add_resource(Health, '/health/')
 api.add_resource(Tasks, '/tasks/')
+api.add_resource(Task, '/task/<str:task_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

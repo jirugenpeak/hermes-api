@@ -11,6 +11,14 @@ def get_tasks():
     con.close()
     return rows
 
+def get_task(task_id):
+    con = sqlite3.connect(DB_PATH)
+    cur = con.cursor()
+    res = cur.execute("SELECT * FROM TASKS WHERE TASK_ID = ?", (task_id,))
+    rows = res.fetchall()
+    con.close()
+    return rows
+
 def create_task(task_id, title):
     con = sqlite3.connect(DB_PATH)
     cur = con.cursor()
